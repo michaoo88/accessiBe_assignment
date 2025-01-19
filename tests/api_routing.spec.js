@@ -9,6 +9,7 @@ test.describe('Shopping Cart', () => {
 
     
     let addToCartReceived = false;
+    let cartInfoReceived = false;
     
     // Mock add to cart request
     await page.route("**/index.php?route=checkout/cart|add**", async (route) => {
@@ -19,13 +20,37 @@ test.describe('Shopping Cart', () => {
         postData: route.request().postData()
       });
       
-      await route.fulfill(cartMocks.addToCartResponses.success);
+      const response = {
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          success: true,
+          message: "Success: You have added Sample Product to your shopping cart!"
+        })
+      };
+      await route.fulfill(response);
     });
 
     // Mock the cart info request that updates the UI
     await page.route("**/index.php?route=common/cart|info**", async (route) => {
-      console.log('Intercepted cart info request');
-      await route.fulfill(cartMocks.cartInfoResponses.oneItem);
+      cartInfoReceived = true;
+      console.log('Intercepted cart info request:', {
+        url: route.request().url(),
+        method: route.request().method()
+      });
+      const response = {
+        status: 200,
+        contentType: "text/html",
+        body: cartMocks.cartInfoResponses.oneItem.body
+      };
+      await route.fulfill(response);
+    });
+
+    // Add debug logging for all requests
+    page.on('request', request => {
+      if (request.url().includes('cart')) {
+        console.log('Debug - Cart Request URL:', request.url());
+      }
     });
 
     // Trigger the add to cart action
@@ -33,13 +58,16 @@ test.describe('Shopping Cart', () => {
     await addToCartButton.waitFor({ state: "visible" });
     await addToCartButton.click();
 
-    // Verify that mock was actually used
-    expect(addToCartReceived).toBeTruthy();
+    // Wait for both requests to complete
+    await expect.poll(() => addToCartReceived && cartInfoReceived, {
+      message: 'Waiting for both add-to-cart and cart-info requests to complete',
+      timeout: 10000
+    }).toBeTruthy();
 
     // Verify cart UI update from our mocked response
     const cartButton = page.locator('button[data-bs-toggle="dropdown"].btn-inverse');
     await expect(cartButton).toBeVisible();
-    await expect(cartButton).toContainText("1 item(s)");
+    await expect(cartButton).toHaveText(/1 item\(s\)/);
   });
 
   test("should show error when product is out of stock", async ({ page }) => {

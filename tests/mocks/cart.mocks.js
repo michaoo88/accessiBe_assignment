@@ -4,7 +4,9 @@ export const cartMocks = {
     success: {
       status: 200,
       contentType: "application/json",
-      body: { success: true }
+      body: { success: true,
+        
+       }
     },
     outOfStock: {
       status: 400,
