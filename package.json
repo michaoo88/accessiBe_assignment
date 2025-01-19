@@ -2,7 +2,10 @@
   "name": "accessibe_assignment",
   "version": "1.0.0",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test_headless": "playwright test && npx playwright show-report",
+    "test_headed": "playwright test --headed && npx playwright show-report"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
