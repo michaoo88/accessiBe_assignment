@@ -1,6 +1,6 @@
 # AccessiBe Assignment - E2E Testing Suite
 
-This project contains end-to-end (E2E) tests using Playwright to validate web application functionality on saudemo.com.
+This project contains end-to-end (E2E) tests using Playwright to validate web application functionality on saucedemo.com and api-mock tests on demo-opencart.com.
 
 ## Project Overview
 
@@ -9,6 +9,7 @@ The test suite covers various aspects of web application testing including:
 - Login functionality
 - Form validation
 - Cross-browser compatibility
+- API routing
 
 ## Prerequisites
 
@@ -52,7 +53,7 @@ Tests are organized in the `tests` directory:
 - `navigation.spec.js` - Navigation flow tests
 - `login.spec.js` - Login functionality tests
 - `form_validation.spec.js` - Form validation tests
-
+- `api_routing.spec.js` - API routing tests
 ## Configuration
 
 The project uses Playwright's configuration file (`playwright.config.js`) which includes:
