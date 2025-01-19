@@ -1,35 +1,36 @@
 export const cartMocks = {
-  // Add to cart API responses
+ 
   addToCartResponses: {
     success: {
       status: 200,
       contentType: "application/json",
-      body: { success: true,
+      body: {
+        success: "Success: You have added a MOCK Product to your shopping cart!",
         
-       }
+      }
     },
     outOfStock: {
-      status: 400,
+      status: 200,
       contentType: "application/json",
       body: { 
-        success: false,
-        error: "Product is out of stock"
+        success:  "Product is out of stock",
+       
       }
     },
     invalidQuantity: {
-      status: 400,
+      status: 200,
       contentType: "application/json",
       body: {
-        success: false,
-        error: "Invalid quantity selected"
+        success: "Invalid quantity selected",
+        
       }
     },
     requiresOptions: {
-      status: 400,
+      status: 200,
       contentType: "application/json",
       body: {
-        success: false,
-        error: "Please select required product options"
+        success: "Please select required product options",
+        
       }
     }
   },
@@ -63,6 +64,59 @@ export const cartMocks = {
         </button>
       </div>`
     }
+  },
+
+  // Test scenarios
+  errorScenarios: [
+    {
+      name: "out of stock",
+      response: {
+        status: 200,
+        contentType: "application/json",
+        body: {
+          success: false,
+          error: "Product is out of stock"
+        }
+      },
+      expectedError: "Product is out of stock"
+    },
+    {
+      name: "invalid quantity",
+      response: {
+        status: 200,
+        contentType: "application/json",
+        body: {
+          success: false,
+          error: "Invalid quantity selected"
+        }
+      },
+      expectedError: "Invalid quantity selected"
+    },
+    {
+      name: "missing required options",
+      response: {
+        status: 200,
+        contentType: "application/json",
+        body: {
+          success: false,
+          error: "Please select required product options"
+        }
+      },
+      expectedError: "Please select required product options"
+    }
+  ],
+
+  // API endpoints
+  endpoints: {
+    addToCart: "**/index.php?route=checkout/cart|add**",
+    cartInfo: "**/index.php?route=common/cart|info**"
+  },
+
+  // Selectors
+  selectors: {
+    cartButton: 'button[data-bs-toggle="dropdown"].btn-inverse',
+    addToCartButton: '.button-group button:first-child',
+    errorAlert: '.alert'
   },
 
   // Sample product data
